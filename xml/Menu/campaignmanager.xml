@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<menu>
+  <item>
+    <path>civicrm/campaign/view</path>
+    <page_callback>CRM_CampaignManager_Form_Campaign_View</page_callback>
+    <title>Campaign_View</title>
+    <access_arguments>administer CiviCampaign</access_arguments>
+  </item>
+</menu>

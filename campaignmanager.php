@@ -17,7 +17,7 @@ function campaignmanager_civicrm_buildForm($formName, &$form) {
         $select->setSelected($_GET['pid']);
       }
       CRM_Core_Region::instance('form-body')->add(array(
-        'template' => 'CampaignManager/Form/Campaign/Parent.tpl',
+        'template' => 'CRM/CampaignManager/Form/Campaign/Parent.tpl',
       ));
     }
     elseif (($action == CRM_Core_Action::UPDATE || $action == CRM_Core_Action::ADD) && !isset($_GET['qfKey'])) {
@@ -34,7 +34,7 @@ function campaignmanager_civicrm_buildForm($formName, &$form) {
         ['class' => 'crm-select2']
       );
       CRM_Core_Region::instance('form-body')->add([
-        'template' => 'CampaignManager/Form/Campaign/Parent.tpl',
+        'template' => 'CRM/CampaignManager/Form/Campaign/Parent.tpl',
       ]);
     }
   }
