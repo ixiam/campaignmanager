@@ -21,11 +21,14 @@
     <ver>5.63</ver>
   </compatibility>
   <comments>This is a new, undeveloped module</comments>
+  <requires>
+    <ext>org.civicrm.search_kit</ext>
+    <ext>org.civicrm.afform</ext>
+  </requires>
   <classloader>
+    <psr0 prefix="CRM_" path="."/>
     <psr4 prefix="Civi\" path="Civi"/>
   </classloader>
-  <requires>
-  </requires>
   <civix>
     <namespace>CRM/CampaignManager</namespace>
     <format>22.05.2</format>

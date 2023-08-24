@@ -34,10 +34,11 @@ SET FOREIGN_KEY_CHECKS=1;
 -- *
 -- *******************************************************/
 CREATE TABLE `civicrm_campaign_tree` (
-  `campaign_id` int unsigned NOT NULL COMMENT 'Unique Campaign ID',
-  `path` varchar(255) NOT NULL COMMENT 'Tree Node path',
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique CampaignTree ID',
+  `campaign_id` int unsigned NOT NULL COMMENT 'Campaign ID',
+  `path` varchar(255) COMMENT 'Tree Node path',
   `depth` int unsigned NOT NULL COMMENT 'Tree Node depth',
-  PRIMARY KEY (`campaign_id`),
+  PRIMARY KEY (`id`),
   CONSTRAINT FK_civicrm_campaign_tree_campaign_id FOREIGN KEY (`campaign_id`) REFERENCES `civicrm_campaign`(`id`) ON DELETE CASCADE
 )
 ENGINE=InnoDB;

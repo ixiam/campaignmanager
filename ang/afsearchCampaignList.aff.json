@@ -1,0 +1,8 @@
+{
+    "type": "search",
+    "title": "Campaigns",
+    "description": "Campaigns List",
+    "icon": "fa-list-alt",
+    "server_route": "civicrm/campaign",
+    "permission": "administer CiviCampaign"
+}

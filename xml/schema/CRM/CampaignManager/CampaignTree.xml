@@ -8,17 +8,25 @@
   <log>true</log>
 
   <field>
+    <name>id</name>
+    <type>int unsigned</type>
+    <required>true</required>
+    <comment>Unique CampaignTree ID</comment>
+  </field>
+  <primaryKey>
+    <name>id</name>
+    <autoincrement>true</autoincrement>
+  </primaryKey>
+
+  <field>
     <name>campaign_id</name>
     <type>int unsigned</type>
     <required>true</required>
-    <comment>Unique Campaign ID</comment>
+    <comment>Campaign ID</comment>
     <html>
       <type>Number</type>
     </html>
   </field>
-  <primaryKey>
-    <name>campaign_id</name>
-  </primaryKey>
   <foreignKey>
     <name>campaign_id</name>
     <table>civicrm_campaign</table>
@@ -30,7 +38,6 @@
     <name>path</name>
     <type>varchar</type>
     <length>255</length>
-    <required>true</required>
     <comment>Tree Node path</comment>
     <html>
       <type>Text</type>
