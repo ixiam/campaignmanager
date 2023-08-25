@@ -19,7 +19,7 @@ class CRM_CampaignManager_Form_Campaign_View extends CRM_Core_Form {
 
     try {
       $campaign = \Civi\Api4\Campaign::get()
-        ->addSelect('*', 'parent_id.id', 'parent_id.title', 'campaign_type_id:label')
+        ->addSelect('*', 'parent_id.id', 'parent_id.title', 'campaign_type_id:label', 'status_id:label')
         ->addWhere('id', '=', $campaignId)
         ->execute()
         ->single();
@@ -28,8 +28,11 @@ class CRM_CampaignManager_Form_Campaign_View extends CRM_Core_Form {
       CRM_Core_Error::statusBounce(E::ts('The requested campaign record does not exist.'));
     }
 
-    $finalTree = [];
-    CRM_Core_BAO_CustomGroup::buildCustomDataView($this, $finalTree, FALSE, NULL, NULL, NULL, $participantID);
+    $groupTree = CRM_Core_BAO_CustomGroup::getTree('Campaign', NULL, $campaignId, 0, NULL, NULL,
+      TRUE, NULL, FALSE, CRM_Core_Permission::VIEW, NULL, TRUE);
+    CRM_Core_BAO_CustomGroup::buildCustomDataView($this, $groupTree, FALSE, NULL, NULL, NULL, $campaignId);
+
+    $this->assign('action', CRM_Core_Action::VIEW);
     $this->assign('campaign', $campaign);
 
     // add viewed participant to recent items list
