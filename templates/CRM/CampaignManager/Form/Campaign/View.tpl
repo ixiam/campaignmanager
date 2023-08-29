@@ -17,8 +17,14 @@
     <tr class="crm-event-campaignview-form-block-parent">
       <td class="label">{ts}Parent{/ts}</td>
       <td>
+        {assign var=parentID value="parent_id.id"}
         {assign var=parentTitle value="parent_id.title"}
-        {$campaign.$parentTitle}
+        {if !empty($campaign.$parentID)}
+        {assign var='urlParams' value="id=`$campaign.$parentID`"}
+        <a href="{crmURL p='civicrm/campaign/view' q=$urlParams}">
+          {$campaign.$parentTitle}
+        </a>
+        {/if}
       </td>
     </tr>
     <tr class="crm-event-campaignview-form-block-type">
