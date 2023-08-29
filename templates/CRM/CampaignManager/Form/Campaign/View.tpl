@@ -1,4 +1,5 @@
 {* View existing campaign record. *}
+{crmScope extensionKey='campaignmanager'}
 <div class="crm-block crm-content-block crm-event-campaign-view-form-block">
   <div class="action-link">
     <div class="crm-submit-buttons">
@@ -13,6 +14,10 @@
     <tr class="crm-event-campaignview-form-block-title">
       <td class="label">{ts}Title{/ts}</td>
       <td><strong>{$campaign.title}</a></strong></td>
+    </tr>
+    <tr class="crm-event-campaignview-form-block-id">
+      <td class="label">{ts}ID{/ts}</td>
+      <td><strong>{$campaign.id}</a></strong></td>
     </tr>
     <tr class="crm-event-campaignview-form-block-parent">
       <td class="label">{ts}Parent{/ts}</td>
@@ -42,9 +47,13 @@
       <td class="label">{ts}External Identifier{/ts}</td>
       <td>{$campaign.external_identifier}</td>
     </tr>
-    <tr class="crm-event-campaignview-form-block-date">
-      <td class="label">{ts}Date start / end{/ts}</td>
-      <td>{$campaign.start_date|crmDate} / {$campaign.end_date|crmDate}</td>
+    <tr class="crm-event-campaignview-form-block-start_date">
+      <td class="label">{ts}Start Date{/ts}</td>
+      <td>{$campaign.start_date|crmDate}</td>
+    </tr>
+    <tr class="crm-event-campaignview-form-block-end_date">
+      <td class="label">{ts}End Date{/ts}</td>
+      <td>{$campaign.end_date|crmDate}</td>
     </tr>
     <tr class="crm-event-campaignview-form-block-status_id">
       <td class="label">{ts}Status{/ts}</td>
@@ -63,3 +72,4 @@
 
   {include file="CRM/Custom/Page/CustomDataView.tpl"}
 </div>
+{/crmScope}
