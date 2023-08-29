@@ -2,11 +2,11 @@
 <extension key="campaignmanager" type="module">
   <file>campaignmanager</file>
   <name>Campaign Manager</name>
-  <description>Campaign Manager</description>
+  <description>Campaign Manager (Next Generation)</description>
   <license>AGPL-3.0</license>
   <maintainer>
-    <author>Luciano Spiegel</author>
-    <email>l.spiegel@ixiam.com</email>
+    <author>iXiam GLobal Solutions</author>
+    <email>info@ixiam.com</email>
   </maintainer>
   <urls>
     <url desc="Main Extension Page">http://FIXME</url>

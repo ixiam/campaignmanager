@@ -1,5 +1,5 @@
 Package: campaignmanager
-Copyright (C) 2023, Luciano Spiegel <l.spiegel@ixiam.com>
+Copyright (C) 2023, iXiam Global Solutions <info@ixiam.com>
 Licensed under the GNU Affero Public License 3.0 (below).
 
 -------------------------------------------------------------------------------
