@@ -1,4 +1,7 @@
 <?php
+// phpcs:disable
+use CRM_CampaignManager_ExtensionUtil as E;
+// phpcs:enable
 
 /**
  * This class generates form components for Campaign View
@@ -15,11 +18,15 @@ class CRM_CampaignManager_Form_Campaign_View extends CRM_Core_Form {
    */
   public function preProcess() {
     $values = $ids = [];
-    $campaignId = CRM_Utils_Request::retrieve('id', 'Positive', $this, TRUE);
+    $campaignId = CRM_Utils_Request::retrieve('id', 'Positive', $this);
+    if (!$campaignId) {
+      CRM_Core_Error::statusBounce(E::ts('Campaign Id missing.'));
+    }
 
     try {
       $campaign = \Civi\Api4\Campaign::get()
-        ->addSelect('*', 'parent_id.id', 'parent_id.title', 'campaign_type_id:label', 'status_id:label')
+        ->addSelect('*', 'parent_id.title', 'campaign_type_id:label', 'status_id:label', 'campaign_status_override.is_override')
+        ->addJoin('CampaignStatusOverride AS campaign_status_override', 'LEFT')
         ->addWhere('id', '=', $campaignId)
         ->execute()
         ->single();
@@ -32,13 +39,18 @@ class CRM_CampaignManager_Form_Campaign_View extends CRM_Core_Form {
       TRUE, NULL, FALSE, CRM_Core_Permission::VIEW, NULL, TRUE);
     CRM_Core_BAO_CustomGroup::buildCustomDataView($this, $groupTree, FALSE, NULL, NULL, NULL, $campaignId);
 
+    // fix same key names for smarty compliance
+    $campaign['parent_title'] = $campaign['parent_id.title'];
+    $campaign['status_label'] = $campaign['status_id:label'];
+    $campaign['campaign_type_label'] = $campaign['campaign_type_id:label'];
+    $campaign['is_override'] = $campaign['campaign_status_override.is_override'] ? ts('Yes') : ts('No');
+    unset($campaign['parent_id.title']);
+    unset($campaign['status_id:label']);
+    unset($campaign['campaign_type_id:label']);
+    unset($campaign['campaign_status_override.is_override']);
+
     $this->assign('action', CRM_Core_Action::VIEW);
     $this->assign('campaign', $campaign);
-
-    // add viewed participant to recent items list
-    $url = CRM_Utils_System::url('civicrm/contact/view/participant',
-      "action=view&reset=1&id={$values[$participantID]['id']}&cid={$values[$participantID]['contact_id']}&context=home"
-    );
   }
 
   /**

@@ -16,5 +16,7 @@
 SET FOREIGN_KEY_CHECKS=0;
 
 DROP TABLE IF EXISTS `civicrm_campaign_tree`;
+DROP TABLE IF EXISTS `civicrm_campaign_status_rule`;
+DROP TABLE IF EXISTS `civicrm_campaign_status_override`;
 
 SET FOREIGN_KEY_CHECKS=1;

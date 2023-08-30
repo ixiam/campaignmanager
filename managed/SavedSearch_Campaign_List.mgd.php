@@ -31,11 +31,22 @@ return [
             'campaign_type_id:label',
             'status_id:label',
             'is_active',
+            'Campaign_CampaignStatusOverride_campaign_id_01.is_override',
           ],
           'orderBy' => [],
           'where' => [],
           'groupBy' => [],
-          'join' => [],
+          'join' => [
+            [
+              'CampaignStatusOverride AS Campaign_CampaignStatusOverride_campaign_id_01',
+              'LEFT',
+              [
+                'id',
+                '=',
+                'Campaign_CampaignStatusOverride_campaign_id_01.campaign_id',
+              ],
+            ],
+          ],
           'having' => [],
         ],
         'expires_date' => NULL,
@@ -85,7 +96,7 @@ return [
               'type' => 'field',
               'key' => 'parent_id.title',
               'dataType' => 'String',
-              'label' => E::ts('Parent Campaign Title'),
+              'label' => E::ts('Parent Campaign'),
               'sortable' => TRUE,
             ],
             [
@@ -122,6 +133,17 @@ return [
               'dataType' => 'Integer',
               'label' => E::ts('Status'),
               'sortable' => TRUE,
+              'icons' => [
+                [
+                  'icon' => 'fa-lock',
+                  'side' => 'left',
+                  'if' => [
+                    'Campaign_CampaignStatusOverride_campaign_id_01.is_override',
+                    '=',
+                    TRUE,
+                  ],
+                ],
+              ],
             ],
             [
               'type' => 'field',
@@ -141,7 +163,7 @@ return [
                   'icon' => 'fa-external-link',
                   'text' => E::ts('View'),
                   'style' => 'default',
-                  'path' => 'civicrm/campaign/view',
+                  'path' => 'civicrm/campaign/view?id=[id]',
                   'condition' => [],
                 ],
               ],
@@ -188,7 +210,7 @@ return [
           ],
           'headerCount' => TRUE,
           'addButton' => [
-            'path' => 'civicrm/campaign/add?reset=1',
+            'path' => 'civicrm/campaign/add?reset=1&action=add',
             'text' => E::ts('Add Campaign'),
             'icon' => 'fa-plus',
           ],

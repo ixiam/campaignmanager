@@ -1,0 +1,18 @@
+{
+  "name": "afsearchCampaignStatusRules",
+  "requires": [],
+  "title": "Campaign Status Rules",
+  "description": "",
+  "is_dashlet": false,
+  "is_public": false,
+  "is_token": false,
+  "permission": "administer CiviCampaign",
+  "type": "search",
+  "icon": "fa-calendar-o",
+  "server_route": "civicrm/admin/campaign/status",
+  "navigation": {
+    "parent": "CiviCampaign",
+    "label": "Campaign Status Rules",
+    "weight": 4
+  }
+}

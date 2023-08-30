@@ -6,4 +6,10 @@
     <title>Campaign_View</title>
     <access_arguments>administer CiviCampaign</access_arguments>
   </item>
+  <item>
+    <path>civicrm/admin/campaign/status/edit</path>
+    <page_callback>CRM_CampaignManager_Form_Campaign_Admin_StatusRule</page_callback>
+    <title>Campaign Status Rule</title>
+    <access_arguments>administer CiviCampaign</access_arguments>
+  </item>
 </menu>

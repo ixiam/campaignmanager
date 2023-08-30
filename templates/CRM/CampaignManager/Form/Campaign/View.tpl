@@ -13,21 +13,19 @@
   <table class="crm-info-panel">
     <tr class="crm-event-campaignview-form-block-title">
       <td class="label">{ts}Title{/ts}</td>
-      <td><strong>{$campaign.title}</a></strong></td>
+      <td><strong>{$campaign.title}</strong></td>
     </tr>
     <tr class="crm-event-campaignview-form-block-id">
       <td class="label">{ts}ID{/ts}</td>
-      <td><strong>{$campaign.id}</a></strong></td>
+      <td>{$campaign.id}</td>
     </tr>
     <tr class="crm-event-campaignview-form-block-parent">
       <td class="label">{ts}Parent{/ts}</td>
       <td>
-        {assign var=parentID value="parent_id.id"}
-        {assign var=parentTitle value="parent_id.title"}
-        {if !empty($campaign.$parentID)}
-        {assign var='urlParams' value="id=`$campaign.$parentID`"}
+        {if !empty($campaign.parent_id)}
+        {assign var='urlParams' value="id=`$campaign.parent_id`"}
         <a href="{crmURL p='civicrm/campaign/view' q=$urlParams}">
-          {$campaign.$parentTitle}
+          {$campaign.parent_title}
         </a>
         {/if}
       </td>
@@ -35,8 +33,7 @@
     <tr class="crm-event-campaignview-form-block-type">
       <td class="label">{ts}Type{/ts}</td>
       <td>
-        {assign var=typeLabel value="campaign_type_id:label"}
-        {$campaign.$typeLabel}
+        {$campaign.campaign_type_label}
       </td>
     </tr>
     <tr class="crm-event-campaignview-form-block-description">
@@ -55,10 +52,13 @@
       <td class="label">{ts}End Date{/ts}</td>
       <td>{$campaign.end_date|crmDate}</td>
     </tr>
+    <tr class="crm-event-campaignview-form-block-is_override">
+      <td class="label">{ts}Status Override?{/ts}</td>
+      <td>{$campaign.is_override}</td>
+    </tr>
     <tr class="crm-event-campaignview-form-block-status_id">
       <td class="label">{ts}Status{/ts}</td>
-      {assign var=statusLabel value="status_id:label"}
-      <td>{$campaign.$statusLabel}</td>
+      <td>{$campaign.status_label}</td>
     </tr>
     <tr class="crm-event-campaignview-form-block-goal_general">
       <td class="label">{ts}Goal General{/ts}</td>

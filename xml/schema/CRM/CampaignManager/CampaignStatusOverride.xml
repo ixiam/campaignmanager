@@ -2,16 +2,19 @@
 
 <table>
   <base>CRM/CampaignManager</base>
-  <class>CampaignTree</class>
-  <name>civicrm_campaign_tree</name>
-  <comment>Campaign Tree</comment>
+  <class>CampaignStatusOverride</class>
+  <name>civicrm_campaign_status_override</name>
+  <comment>FIXME</comment>
   <log>false</log>
 
   <field>
     <name>id</name>
     <type>int unsigned</type>
     <required>true</required>
-    <comment>Unique CampaignTree ID</comment>
+    <comment>Unique CampaignStatusOverride ID</comment>
+    <html>
+      <type>Number</type>
+    </html>
   </field>
   <primaryKey>
     <name>id</name>
@@ -35,23 +38,19 @@
   </foreignKey>
 
   <field>
-    <name>path</name>
-    <type>varchar</type>
-    <length>255</length>
-    <comment>Tree Node path</comment>
+    <name>is_override</name>
+    <uniqueName>campaign_is_override</uniqueName>
+    <title>Status Override</title>
+    <import>true</import>
+    <export>true</export>
+    <headerPattern>/override$/i</headerPattern>
+    <type>boolean</type>
+    <comment>Admin users may set a manual status which overrides the calculated status. When this flag is true, automated status update scripts should NOT modify status for the record.</comment>
     <html>
-      <type>Text</type>
+      <type>CheckBox</type>
     </html>
-  </field>
-
-  <field>
-    <name>depth</name>
-    <type>int unsigned</type>
+    <default>0</default>
     <required>true</required>
-    <comment>Tree Node depth</comment>
-    <html>
-      <type>Number</type>
-    </html>
   </field>
 
 </table>

@@ -11,42 +11,68 @@ use CRM_CampaignManager_ExtensionUtil as E;
 function campaignmanager_civicrm_buildForm($formName, &$form) {
   if ($formName == 'CRM_Campaign_Form_Campaign') {
     $action = $form->getAction();
-    if ($action == CRM_Core_Action::NONE && !isset($_GET['qfKey'])) {
-      if (isset($_GET['pid'])) {
-        $select = $form->getElement('parent_id');
-        $select->setSelected($_GET['pid']);
-      }
-      CRM_Core_Region::instance('form-body')->add(array(
-        'template' => 'CRM/CampaignManager/Form/Campaign/Parent.tpl',
-      ));
-    }
-    elseif (($action == CRM_Core_Action::UPDATE || $action == CRM_Core_Action::ADD) && !isset($_GET['qfKey'])) {
-      $cid = $form->getVar('_campaignId');
-      $campaigns = \Civi\Api4\Campaign::get()
-        ->addSelect('id', 'title')
-        ->addWhere('id', '!=', $cid)
-        ->execute()
-        ->indexBy('id')
-        ->column('title');
+    if (!isset($_GET['qfKey'])) {
+      $defaults = [];
+      switch ($action) {
+        case CRM_Core_Action::NONE:
+        case CRM_Core_Action::ADD:
+        case CRM_Core_Action::UPDATE:
 
-      $form->addElement('select', 'parent_id', E::ts('Parent ID'),
-        ['' => E::ts('- select Parent -')] + $campaigns,
-        ['class' => 'crm-select2']
-      );
-      CRM_Core_Region::instance('form-body')->add([
-        'template' => 'CRM/CampaignManager/Form/Campaign/Parent.tpl',
-      ]);
+          $cid = $form->getVar('_campaignId');
+          $campaignAPI = \Civi\Api4\Campaign::get()->addSelect('id', 'title');
+          if ($cid) {
+            $campaignAPI->addWhere('id', '!=', $cid);
+            $defaults = \Civi\Api4\CampaignStatusOverride::get()
+              ->addSelect('is_override')
+              ->addWhere('campaign_id', '=', $cid)
+              ->execute()
+              ->single() ?? 0;
+          }
+          $campaigns = $campaignAPI->execute()->indexBy('id')->column('title');
+
+          $form->addElement('select', 'parent_id', E::ts('Parent ID'),
+            ['' => E::ts('- select Parent -')] + $campaigns,
+            ['class' => 'crm-select2']
+          );
+          $form->addElement('checkbox', 'is_override', ts('Status Override?'));
+          $form->setDefaults($defaults);
+
+          CRM_Core_Region::instance('form-body')->add([
+            'template' => 'CRM/CampaignManager/Form/Campaign/Edit.tpl',
+          ]);
+          break;
+      }
     }
   }
+}
+
+/**
+ * Implements hook_civicrm_validateForm().
+ *
+ */
+function campaignmanager_civicrm_validateForm($formName, &$fields, &$files, &$form, &$errors) {
+  if ($formName == 'CRM_Campaign_Form_Campaign') {
+    if (in_array($form->getAction(), [CRM_Core_Action::DELETE, CRM_Core_Action::VIEW])) {
+      return;
+    }
+
+    $isOverride = strtoupper(CRM_Utils_Array::value('is_override', $fields));
+    $statusId = strtoupper(CRM_Utils_Array::value('status_id', $fields));
+    if ($isOverride && empty($statusId)) {
+      $errors['is_override'] = E::ts('You have to select a Campaign Status if you checked "Status Override"');
+    }
+  }
+  return;
 }
 
 /**
  * Implementation of hook_civicrm_postCommit:
  */
 function campaignmanager_civicrm_postCommit($op, $objectName, $objectId, &$objectRef) {
-  // Handles CampaignTree row on Campaign edition
   if ($objectName === 'Campaign') {
+    // Save CampaignTree row on Campaign edition
     $depth = 1;
+
     $path = CRM_CampaignManager_BAO_CampaignTree::SEPARATOR;
     // not sure why empty parent_id arrives as string "null"
     if (!empty($objectRef->parent_id) && ($objectRef->parent_id != 'null')) {
@@ -63,24 +89,46 @@ function campaignmanager_civicrm_postCommit($op, $objectName, $objectId, &$objec
 
     switch ($op) {
       case 'create':
-        $campaignTree = \Civi\Api4\CampaignTree::create()
-          ->addValue('campaign_id', $objectId)
-          ->addValue('path', $path)
-          ->addValue('depth', $depth)
-          ->execute();
-        break;
-
       case 'edit':
-        $results = \Civi\Api4\CampaignTree::update()
-          ->addValue('path', $path)
-          ->addValue('depth', $depth)
-          ->addWhere('campaign_id', '=', $objectId)
+        $paramsTree[] = [
+          'campaign_id' => $objectId,
+          'path' => $path,
+          'depth' => $depth,
+        ];
+        \Civi\Api4\CampaignTree::save()
+          ->setRecords($paramsTree)
+          ->setMatch(['campaign_id'])
           ->execute();
+
+        // Save status is_override
+        $isOverride = CRM_Utils_Request::retrieveValue('is_override', 'Boolean', 0, FALSE, 'POST') ?? 0;
+        $paramsOverride[] = [
+          'is_override' => $isOverride,
+          'campaign_id' => $objectId,
+        ];
+        \Civi\Api4\CampaignStatusOverride::save()
+          ->setRecords($paramsOverride)
+          ->addDefault('is_override', FALSE)
+          ->setMatch(['campaign_id'])
+          ->execute();
+
+        // Calculate and edit campaign status
+        if (!$isOverride) {
+          $campaign = $objectRef->toArray();
+          $newStatusId = CRM_CampaignManager_BAO_CampaignStatusRule::getCampaignStatusByDate($campaign['start_date'], $campaign['end_date'], 'now', $campaign);
+          if (!empty($newStatusId)) {
+            \Civi\Api4\Campaign::update()
+              ->addValue('status_id', $newStatusId)
+              ->addWhere('id', '=', $objectId)
+              ->execute();
+          }
+        }
         break;
 
       case 'delete':
         // no need, cascade deletion
         break;
+
     }
   }
 }

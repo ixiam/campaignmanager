@@ -1,0 +1,176 @@
+<?php
+
+// phpcs:disable
+use CRM_CampaignManager_ExtensionUtil as E;
+// phpcs:enable
+
+return [
+  [
+    'name' => 'SavedSearch_Campaign_Status_Rules',
+    'entity' => 'SavedSearch',
+    'cleanup' => 'always',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'name' => 'Campaign_Status_Rules',
+        'label' => E::ts('Campaign Status Rules'),
+        'form_values' => NULL,
+        'mapping_id' => NULL,
+        'search_custom_id' => NULL,
+        'api_entity' => 'CampaignStatusRule',
+        'api_params' => [
+          'version' => 4,
+          'select' => [
+            'id',
+            'status_id:label',
+            'start_event:label',
+            'start_event_adjust_unit:label',
+            'start_event_adjust_interval',
+            'end_event_adjust_unit:label',
+            'end_event_adjust_interval',
+            'end_event:label',
+            'is_active',
+            'weight',
+          ],
+          'orderBy' => [],
+          'where' => [],
+          'groupBy' => [],
+          'join' => [],
+          'having' => [],
+        ],
+        'expires_date' => NULL,
+        'description' => NULL,
+      ],
+      'match' => [
+        'name',
+      ],
+    ],
+  ],
+  [
+    'name' => 'SavedSearch_Campaign_Status_Rules_SearchDisplay_Campaign_Status_Rules_Table_1',
+    'entity' => 'SearchDisplay',
+    'cleanup' => 'always',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'name' => 'Campaign_Status_Rules_Table_1',
+        'label' => E::ts('Campaign Status Rules Table 1'),
+        'saved_search_id.name' => 'Campaign_Status_Rules',
+        'type' => 'table',
+        'settings' => [
+          'description' => NULL,
+          'sort' => [
+            [
+              'weight',
+              'ASC',
+            ],
+          ],
+          'limit' => 50,
+          'pager' => [],
+          'placeholder' => 5,
+          'columns' => [
+            [
+              'type' => 'field',
+              'key' => 'status_id:label',
+              'dataType' => 'Integer',
+              'label' => ts('Status'),
+              'sortable' => TRUE,
+            ],
+            [
+              'type' => 'field',
+              'key' => 'start_event:label',
+              'dataType' => 'String',
+              'label' => ts('Start Event'),
+              'sortable' => TRUE,
+              'empty_value' => '-',
+            ],
+            [
+              'type' => 'field',
+              'key' => 'start_event_adjust_unit:label',
+              'dataType' => 'String',
+              'label' => ts('Start Event Adjust Unit'),
+              'sortable' => TRUE,
+              'rewrite' => '[start_event_adjust_interval] [start_event_adjust_unit:label]',
+              'empty_value' => '-',
+            ],
+            [
+              'type' => 'field',
+              'key' => 'end_event:label',
+              'dataType' => 'String',
+              'label' => ts('End Event'),
+              'sortable' => TRUE,
+              'empty_value' => '-',
+            ],
+            [
+              'type' => 'field',
+              'key' => 'end_event_adjust_unit:label',
+              'dataType' => 'String',
+              'label' => ts('End Event Adjust Unit'),
+              'sortable' => TRUE,
+              'rewrite' => '[end_event_adjust_interval] [end_event_adjust_unit:label]',
+              'empty_value' => '-',
+            ],
+            [
+              'type' => 'field',
+              'key' => 'is_active',
+              'dataType' => 'Boolean',
+              'label' => ts('Enabled'),
+              'sortable' => TRUE,
+              'icons' => [],
+            ],
+            [
+              'text' => '',
+              'style' => 'default',
+              'size' => 'btn-xs',
+              'icon' => 'fa-bars',
+              'links' => [
+                [
+                  'entity' => 'CampaignStatusRule',
+                  'action' => 'update',
+                  'join' => '',
+                  'target' => '',
+                  'icon' => 'fa-pencil',
+                  'text' => E::ts('Edit Campaign Status Rule'),
+                  'style' => 'default',
+                  'path' => '',
+                  'condition' => [],
+                ],
+                [
+                  'entity' => 'CampaignStatusRule',
+                  'action' => 'delete',
+                  'join' => '',
+                  'target' => '',
+                  'icon' => 'fa-trash',
+                  'text' => E::ts('Delete Campaign Status Rule'),
+                  'style' => 'danger',
+                  'path' => '',
+                  'condition' => [],
+                ],
+              ],
+              'type' => 'menu',
+              'alignment' => 'text-right',
+            ],
+          ],
+          'actions' => TRUE,
+          'classes' => [
+            'table',
+            'table-striped',
+            'table-bordered',
+          ],
+          'addButton' => [
+            'path' => 'civicrm/admin/campaign/status/edit?reset=1&action=add',
+            'text' => E::ts('Add Campaign Status Rule'),
+            'icon' => 'fa-plus',
+          ],
+        ],
+        'acl_bypass' => FALSE,
+      ],
+      'match' => [
+        'name',
+        'saved_search_id',
+      ],
+    ],
+  ],
+];

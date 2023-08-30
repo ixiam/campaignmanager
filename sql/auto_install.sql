@@ -18,6 +18,8 @@
 SET FOREIGN_KEY_CHECKS=0;
 
 DROP TABLE IF EXISTS `civicrm_campaign_tree`;
+DROP TABLE IF EXISTS `civicrm_campaign_status_rule`;
+DROP TABLE IF EXISTS `civicrm_campaign_status_override`;
 
 SET FOREIGN_KEY_CHECKS=1;
 -- /*******************************************************
@@ -25,6 +27,45 @@ SET FOREIGN_KEY_CHECKS=1;
 -- * Create new tables
 -- *
 -- *******************************************************/
+
+-- /*******************************************************
+-- *
+-- * civicrm_campaign_status_override
+-- *
+-- * FIXME
+-- *
+-- *******************************************************/
+CREATE TABLE `civicrm_campaign_status_override` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique CampaignStatusOverride ID',
+  `campaign_id` int unsigned NOT NULL COMMENT 'Campaign ID',
+  `is_override` tinyint NOT NULL DEFAULT 0 COMMENT 'Admin users may set a manual status which overrides the calculated status. When this flag is true, automated status update scripts should NOT modify status for the record.',
+  PRIMARY KEY (`id`),
+  CONSTRAINT FK_civicrm_campaign_status_override_campaign_id FOREIGN KEY (`campaign_id`) REFERENCES `civicrm_campaign`(`id`) ON DELETE CASCADE
+)
+ENGINE=InnoDB;
+
+-- /*******************************************************
+-- *
+-- * civicrm_campaign_status_rule
+-- *
+-- * Campaign Status Rule
+-- *
+-- *******************************************************/
+CREATE TABLE `civicrm_campaign_status_rule` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'Campaign ID',
+  `status_id` int unsigned DEFAULT NULL COMMENT 'Campaign status ID.Implicit FK to civicrm_option_value where option_group = campaign_status',
+  `start_event` varchar(12) COMMENT 'Event when this status starts.',
+  `start_event_adjust_unit` varchar(8) COMMENT 'Unit used for adjusting from start_event.',
+  `start_event_adjust_interval` int COMMENT 'Status range begins this many units from start_event.',
+  `end_event` varchar(12) COMMENT 'Event after which this status ends.',
+  `end_event_adjust_unit` varchar(8) COMMENT 'Unit used for adjusting from the ending event.',
+  `end_event_adjust_interval` int COMMENT 'Status range ends this many units from end_event.',
+  `weight` int,
+  `is_default` tinyint NOT NULL DEFAULT 0 COMMENT 'Assign this status to a membership record if no other status match is found.',
+  `is_active` tinyint NOT NULL DEFAULT 1 COMMENT 'Is this membership_status enabled.',
+  PRIMARY KEY (`id`)
+)
+ENGINE=InnoDB;
 
 -- /*******************************************************
 -- *
