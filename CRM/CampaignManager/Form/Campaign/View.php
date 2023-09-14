@@ -51,6 +51,28 @@ class CRM_CampaignManager_Form_Campaign_View extends CRM_Core_Form {
 
     $this->assign('action', CRM_Core_Action::VIEW);
     $this->assign('campaign', $campaign);
+
+    // get KPIs
+    $campaignKpis = \Civi\Api4\CampaignKpi::get()
+      ->addSelect('name', 'title', 'campaign_kpi_value.value', 'campaign_kpi_value.value_parent')
+      ->addJoin('CampaignKpiValue AS campaign_kpi_value', 'LEFT',
+          ['campaign_kpi_value.campaign_kpi_id', '=', 'id'],
+          ['campaign_kpi_value.campaign_id', '=', $campaignId]
+        )
+      ->addWhere('is_active', '=', TRUE)
+      ->execute();
+    $campaignKpis = array_map(function($tag) {
+      return [
+        'id' => $tag['id'],
+        'name' => $tag['name'],
+        'title' => $tag['title'],
+        'value' => $tag['campaign_kpi_value.value'],
+        'value_parent' => $tag['campaign_kpi_value.value_parent'],
+      ];
+    }, (array) $campaignKpis);
+
+    $this->assign('kpis', $campaignKpis);
+
   }
 
   /**

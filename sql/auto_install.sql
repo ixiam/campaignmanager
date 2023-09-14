@@ -20,6 +20,8 @@ SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `civicrm_campaign_tree`;
 DROP TABLE IF EXISTS `civicrm_campaign_status_rule`;
 DROP TABLE IF EXISTS `civicrm_campaign_status_override`;
+DROP TABLE IF EXISTS `civicrm_campaign_kpi_value`;
+DROP TABLE IF EXISTS `civicrm_campaign_kpi`;
 
 SET FOREIGN_KEY_CHECKS=1;
 -- /*******************************************************
@@ -27,6 +29,42 @@ SET FOREIGN_KEY_CHECKS=1;
 -- * Create new tables
 -- *
 -- *******************************************************/
+
+-- /*******************************************************
+-- *
+-- * civicrm_campaign_kpi
+-- *
+-- * FIXME
+-- *
+-- *******************************************************/
+CREATE TABLE `civicrm_campaign_kpi` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'Campaign KPI ID',
+  `name` varchar(255) NOT NULL COMMENT 'Name of the Campaign KPI.',
+  `title` varchar(255) COMMENT 'Title of the Campaign KPI.',
+  `is_active` tinyint NOT NULL DEFAULT 1 COMMENT 'Is this membership_status enabled.',
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `UI_name`(name)
+)
+ENGINE=InnoDB;
+
+-- /*******************************************************
+-- *
+-- * civicrm_campaign_kpi_value
+-- *
+-- * FIXME
+-- *
+-- *******************************************************/
+CREATE TABLE `civicrm_campaign_kpi_value` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique CampaignKpiValue ID',
+  `campaign_kpi_id` int unsigned NOT NULL COMMENT 'Campaign KPI ID',
+  `campaign_id` int unsigned NOT NULL COMMENT 'Campaign ID',
+  `value` varchar(255) COMMENT 'KPI value.',
+  `value_parent` varchar(255) COMMENT 'KPI Parent value.',
+  PRIMARY KEY (`id`),
+  CONSTRAINT FK_civicrm_campaign_kpi_value_campaign_kpi_id FOREIGN KEY (`campaign_kpi_id`) REFERENCES `civicrm_campaign_kpi`(`id`) ON DELETE CASCADE,
+  CONSTRAINT FK_civicrm_campaign_kpi_value_campaign_id FOREIGN KEY (`campaign_id`) REFERENCES `civicrm_campaign`(`id`) ON DELETE CASCADE
+)
+ENGINE=InnoDB;
 
 -- /*******************************************************
 -- *

@@ -18,5 +18,7 @@ SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `civicrm_campaign_tree`;
 DROP TABLE IF EXISTS `civicrm_campaign_status_rule`;
 DROP TABLE IF EXISTS `civicrm_campaign_status_override`;
+DROP TABLE IF EXISTS `civicrm_campaign_kpi_value`;
+DROP TABLE IF EXISTS `civicrm_campaign_kpi`;
 
 SET FOREIGN_KEY_CHECKS=1;

@@ -71,5 +71,23 @@
   </table>
 
   {include file="CRM/Custom/Page/CustomDataView.tpl"}
+
+  {* KPIS table *}
+  <table class="row-highlight">
+    <tr class="columnheader">
+      <th>KPI</th>
+      <th>Value</th>
+      <th>Last update</th>
+      <th width="30"></th>
+    </tr>
+    {foreach from=$kpis item=kpi}
+      <tr>
+        <td>{$kpi.title}</td>
+        <td>{$kpi.value}</td>
+        <td></td>
+        <td></td>
+      </tr>
+    {/foreach}
+  </table>
 </div>
 {/crmScope}
