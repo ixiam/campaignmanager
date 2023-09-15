@@ -3,6 +3,10 @@
 require_once 'campaignmanager.civix.php';
 // phpcs:disable
 use CRM_CampaignManager_ExtensionUtil as E;
+use Civi\CampaignManager\Utils\ClassScanner as ClassScanner;
+use Symfony\Component\Config\Resource\FileResource;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 // phpcs:enable
 
 /**

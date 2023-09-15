@@ -55,11 +55,12 @@ ENGINE=InnoDB;
 -- *
 -- *******************************************************/
 CREATE TABLE `civicrm_campaign_kpi_value` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique CampaignKpiValue ID',
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique CampaignKPIValue ID',
   `campaign_kpi_id` int unsigned NOT NULL COMMENT 'Campaign KPI ID',
   `campaign_id` int unsigned NOT NULL COMMENT 'Campaign ID',
   `value` varchar(255) COMMENT 'KPI value.',
   `value_parent` varchar(255) COMMENT 'KPI Parent value.',
+  `last_modified_date` datetime COMMENT 'Date and time that Campaign was edited last time.',
   PRIMARY KEY (`id`),
   CONSTRAINT FK_civicrm_campaign_kpi_value_campaign_kpi_id FOREIGN KEY (`campaign_kpi_id`) REFERENCES `civicrm_campaign_kpi`(`id`) ON DELETE CASCADE,
   CONSTRAINT FK_civicrm_campaign_kpi_value_campaign_id FOREIGN KEY (`campaign_id`) REFERENCES `civicrm_campaign`(`id`) ON DELETE CASCADE

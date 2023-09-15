@@ -83,11 +83,32 @@
     {foreach from=$kpis item=kpi}
       <tr>
         <td>{$kpi.title}</td>
-        <td>{$kpi.value}</td>
-        <td></td>
+        <td id='kpi-value-{$kpi.id}'>{$kpi.value}</td>
+        <td>
+          <a onclick="refreshKpiValue('{$kpi.id}', '{$campaign.id}')" title="{ts}Refresh{/ts}" class="button">
+            <span><i class="crm-i fa-refresh" aria-hidden="true"></i></span>
+          </a>
+        </td>
         <td></td>
       </tr>
     {/foreach}
   </table>
 </div>
+
+{literal}
+<script type="text/javascript">
+function refreshKpiValue(kpiId, campaignId){
+  CRM.api4('CampaignKPI', 'calculate', {
+    'kpiId': kpiId,
+    'campaignId': campaignId
+  }).then(function(results) {
+    console.log(results);
+    CRM.$('td[id="kpi-value-' + kpiId + '"]').html(results[0].value);
+  }, function(failure) {
+    CRM.alert('There\'s been an error calculating this KPI.', 'error', 'error');
+  });
+}
+</script>
+{/literal}
+
 {/crmScope}

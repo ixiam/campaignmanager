@@ -53,9 +53,9 @@ class CRM_CampaignManager_Form_Campaign_View extends CRM_Core_Form {
     $this->assign('campaign', $campaign);
 
     // get KPIs
-    $campaignKpis = \Civi\Api4\CampaignKpi::get()
+    $campaignKpis = \Civi\Api4\CampaignKPI::get()
       ->addSelect('name', 'title', 'campaign_kpi_value.value', 'campaign_kpi_value.value_parent')
-      ->addJoin('CampaignKpiValue AS campaign_kpi_value', 'LEFT',
+      ->addJoin('CampaignKPIValue AS campaign_kpi_value', 'LEFT',
           ['campaign_kpi_value.campaign_kpi_id', '=', 'id'],
           ['campaign_kpi_value.campaign_id', '=', $campaignId]
         )
