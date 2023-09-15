@@ -9,6 +9,20 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 // phpcs:enable
 
+function campaignmanager_civicrm_pre($op, $objectName, $id, &$params) {
+  if ($objectName == "Campaign" && in_array($op, ['create', 'edit'])) {
+    // Calculate and edit campaign status
+    $isOverride = CRM_Utils_Request::retrieveValue('is_override', 'Boolean', 0, FALSE, 'POST') ?? 0;
+    if (!$isOverride) {
+      $newStatusId = CRM_CampaignManager_BAO_CampaignStatusRule::getCampaignStatusByDate($params['start_date'], $params['end_date'], 'now');
+      if (!empty($newStatusId)) {
+        $params['status_id'] = $newStatusId;
+      }
+    }
+  }
+
+}
+
 /**
  * Implementation of hook_civicrm_buildForm:
  */
@@ -115,18 +129,6 @@ function campaignmanager_civicrm_postCommit($op, $objectName, $objectId, &$objec
           ->addDefault('is_override', FALSE)
           ->setMatch(['campaign_id'])
           ->execute();
-
-        // Calculate and edit campaign status
-        if (!$isOverride) {
-          $campaign = $objectRef->toArray();
-          $newStatusId = CRM_CampaignManager_BAO_CampaignStatusRule::getCampaignStatusByDate($campaign['start_date'], $campaign['end_date'], 'now', $campaign);
-          if (!empty($newStatusId)) {
-            \Civi\Api4\Campaign::update()
-              ->addValue('status_id', $newStatusId)
-              ->addWhere('id', '=', $objectId)
-              ->execute();
-          }
-        }
         break;
 
       case 'delete':

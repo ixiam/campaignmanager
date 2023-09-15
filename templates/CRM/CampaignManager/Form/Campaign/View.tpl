@@ -1,5 +1,31 @@
 {* View existing campaign record. *}
 {crmScope extensionKey='campaignmanager'}
+
+{literal}
+<style type="text/css">
+.modal {
+  display:    none;
+  position:   fixed;
+  z-index:    1000;
+  top:        0;
+  left:       0;
+  height:     100%;
+  width:      100%;
+  background: rgba( 255, 255, 255, .8 )
+              url('{/literal}{$config->resourceBase}i/loading.gif{literal}')
+              50% 50%
+              no-repeat;
+}
+body.loading {
+  overflow: hidden;
+}
+body.loading .modal {
+  display: block;
+}
+</style>
+{/literal}
+
+
 <div class="crm-block crm-content-block crm-event-campaign-view-form-block">
   <div class="action-link">
     <div class="crm-submit-buttons">
@@ -75,35 +101,54 @@
   {* KPIS table *}
   <table class="row-highlight">
     <tr class="columnheader">
-      <th>KPI</th>
-      <th>Value</th>
-      <th>Last update</th>
+      <th>{ts}KPI{/ts}</th>
+      <th>{ts}Value{/ts}</th>
+      {if !empty($campaign.is_parent)}
+      <th>{ts}Parent Value{/ts}</th>
+      {/if}
       <th width="30"></th>
     </tr>
     {foreach from=$kpis item=kpi}
       <tr>
         <td>{$kpi.title}</td>
         <td id='kpi-value-{$kpi.id}'>{$kpi.value}</td>
+        {if !empty($campaign.is_parent)}
+        <td id='kpi-value_parent-{$kpi.id}'>{$kpi.value_parent}</td>
+        {/if}
         <td>
           <a onclick="refreshKpiValue('{$kpi.id}', '{$campaign.id}')" title="{ts}Refresh{/ts}" class="button">
             <span><i class="crm-i fa-refresh" aria-hidden="true"></i></span>
           </a>
         </td>
-        <td></td>
       </tr>
     {/foreach}
   </table>
 </div>
 
+<div class="modal"><!-- Place at bottom of page --></div>
+
 {literal}
 <script type="text/javascript">
+(function($) {
+
+  CRM.$(document).bind("ajaxStart", function(){
+    CRM.$('body').addClass("loading");
+  }).bind("ajaxStop", function(){
+    CRM.$('body').removeClass("loading");
+  });
+})(CRM.$);
+
 function refreshKpiValue(kpiId, campaignId){
   CRM.api4('CampaignKPI', 'calculate', {
     'kpiId': kpiId,
     'campaignId': campaignId
   }).then(function(results) {
-    console.log(results);
     CRM.$('td[id="kpi-value-' + kpiId + '"]').html(results[0].value);
+    {/literal}
+    {if !empty($campaign.is_parent)}
+    CRM.$('td[id="kpi-value_parent-' + kpiId + '"]').html(results[0].value_parent);
+    {/if}
+    {literal}
   }, function(failure) {
     CRM.alert('There\'s been an error calculating this KPI.', 'error', 'error');
   });

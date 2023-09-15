@@ -30,6 +30,12 @@ class CRM_CampaignManager_Form_Campaign_View extends CRM_Core_Form {
         ->addWhere('id', '=', $campaignId)
         ->execute()
         ->single();
+
+      $is_parent = (bool) \Civi\Api4\Campaign::get()
+        ->selectRowCount()
+        ->addWhere('parent_id', '=', $campaignId)
+        ->execute()
+        ->count();
     }
     catch (Exception $e) {
       CRM_Core_Error::statusBounce(E::ts('The requested campaign record does not exist.'));
@@ -44,6 +50,8 @@ class CRM_CampaignManager_Form_Campaign_View extends CRM_Core_Form {
     $campaign['status_label'] = $campaign['status_id:label'];
     $campaign['campaign_type_label'] = $campaign['campaign_type_id:label'];
     $campaign['is_override'] = $campaign['campaign_status_override.is_override'] ? ts('Yes') : ts('No');
+    $campaign['is_parent'] = $is_parent;
+    $campaign['is_child'] = (bool) $campaign['parent_id'] ?? 0;
     unset($campaign['parent_id.title']);
     unset($campaign['status_id:label']);
     unset($campaign['campaign_type_id:label']);
