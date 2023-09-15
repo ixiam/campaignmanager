@@ -106,20 +106,24 @@ body.loading .modal {
       {if !empty($campaign.is_parent)}
       <th>{ts}Parent Value{/ts}</th>
       {/if}
-      <th width="30"></th>
     </tr>
     {foreach from=$kpis item=kpi}
       <tr>
         <td>{$kpi.title}</td>
-        <td id='kpi-value-{$kpi.id}'>{$kpi.value}</td>
-        {if !empty($campaign.is_parent)}
-        <td id='kpi-value_parent-{$kpi.id}'>{$kpi.value_parent}</td>
-        {/if}
-        <td>
+        <td id='kpi-value-{$kpi.id}'>
+          {$kpi.value}&nbsp;
           <a onclick="refreshKpiValue('{$kpi.id}', '{$campaign.id}')" title="{ts}Refresh{/ts}" class="button">
             <span><i class="crm-i fa-refresh" aria-hidden="true"></i></span>
           </a>
         </td>
+        {if !empty($campaign.is_parent)}
+        <td id='kpi-value_parent-{$kpi.id}'>
+          {$kpi.value_parent}&nbsp;
+          <a onclick="refreshKpiValue('{$kpi.id}', '{$campaign.id}', true)" title="{ts}Refresh{/ts}" class="button">
+            <span><i class="crm-i fa-refresh" aria-hidden="true"></i></span>
+          </a>
+        </td>
+        {/if}
       </tr>
     {/foreach}
   </table>
@@ -138,10 +142,11 @@ body.loading .modal {
   });
 })(CRM.$);
 
-function refreshKpiValue(kpiId, campaignId){
+function refreshKpiValue(kpiId, campaignId, parentValue = false){
   CRM.api4('CampaignKPI', 'calculate', {
     'kpiId': kpiId,
-    'campaignId': campaignId
+    'campaignId': campaignId,
+    'parentValue': parentValue
   }).then(function(results) {
     CRM.$('td[id="kpi-value-' + kpiId + '"]').html(results[0].value);
     {/literal}
