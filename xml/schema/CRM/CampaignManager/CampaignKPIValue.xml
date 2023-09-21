@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<table>
+  <base>CRM/CampaignManager</base>
+  <class>CampaignKPIValue</class>
+  <name>civicrm_campaign_kpi_value</name>
+  <comment>FIXME</comment>
+  <log>true</log>
+
+  <field>
+    <name>id</name>
+    <type>int unsigned</type>
+    <required>true</required>
+    <comment>Unique CampaignKPIValue ID</comment>
+    <html>
+      <type>Number</type>
+    </html>
+  </field>
+  <primaryKey>
+    <name>id</name>
+    <autoincrement>true</autoincrement>
+  </primaryKey>
+
+  <field>
+    <name>campaign_kpi_id</name>
+    <type>int unsigned</type>
+    <required>true</required>
+    <comment>Campaign KPI ID</comment>
+  </field>
+  <foreignKey>
+    <name>campaign_kpi_id</name>
+    <table>civicrm_campaign_kpi</table>
+    <key>id</key>
+    <onDelete>CASCADE</onDelete>
+  </foreignKey>
+
+  <field>
+    <name>campaign_id</name>
+    <type>int unsigned</type>
+    <required>true</required>
+    <comment>Campaign ID</comment>
+    <html>
+      <type>Number</type>
+    </html>
+  </field>
+  <foreignKey>
+    <name>campaign_id</name>
+    <table>civicrm_campaign</table>
+    <key>id</key>
+    <onDelete>CASCADE</onDelete>
+  </foreignKey>
+
+  <field>
+    <name>value</name>
+    <type>varchar</type>
+    <length>255</length>
+    <comment>KPI value.</comment>
+  </field>
+
+  <field>
+    <name>value_parent</name>
+    <type>varchar</type>
+    <length>255</length>
+    <comment>KPI Parent value.</comment>
+  </field>
+
+  <field>
+    <name>last_modified_date</name>
+    <type>datetime</type>
+    <title>Campaign KPI value Modified Date</title>
+    <comment>Date and time that Campaign was edited last time.</comment>
+  </field>
+
+</table>
