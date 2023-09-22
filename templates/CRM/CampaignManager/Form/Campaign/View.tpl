@@ -112,15 +112,21 @@ body.loading .modal {
         <td>{$kpi.title}</td>
         <td id='kpi-value-{$kpi.id}'>
           {$kpi.value}&nbsp;
+          <a href="#" class="crm-hover-button" id="swap_target_assignee" title="Sep 2nd 2023" style="position:relative; bottom: 1em;">
+           <i class="crm-i fa-question-circle-o" aria-hidden="true"></i>
+          </a>
           <a onclick="refreshKpiValue('{$kpi.id}', '{$campaign.id}')" title="{ts}Refresh{/ts}" class="button">
-            <span><i class="crm-i fa-refresh" aria-hidden="true"></i></span>
+           <i class="crm-i fa-refresh" aria-hidden="true"></i>
           </a>
         </td>
         {if !empty($campaign.is_parent)}
         <td id='kpi-value_parent-{$kpi.id}'>
           {$kpi.value_parent}&nbsp;
+          <a href="#" class="crm-hover-button" id="swap_target_assignee" title="Sep 2nd 2023" style="position:relative; bottom: 1em;">
+           <i class="crm-i fa-question-circle-o" aria-hidden="true"></i>
+          </a>
           <a onclick="refreshKpiValue('{$kpi.id}', '{$campaign.id}', true)" title="{ts}Refresh{/ts}" class="button">
-            <span><i class="crm-i fa-refresh" aria-hidden="true"></i></span>
+           <i class="crm-i fa-refresh" aria-hidden="true"></i>
           </a>
         </td>
         {/if}
@@ -148,13 +154,14 @@ function refreshKpiValue(kpiId, campaignId, parentValue = false){
     'campaignId': campaignId,
     'parentValue': parentValue
   }).then(function(results) {
-    CRM.$('td[id="kpi-value-' + kpiId + '"]').html(results[0].value);
-    {/literal}
-    {if !empty($campaign.is_parent)}
-    CRM.$('td[id="kpi-value_parent-' + kpiId + '"]').html(results[0].value_parent);
-    {/if}
-    {literal}
+    if(parentValue){
+      CRM.$('td[id="kpi-value_parent-' + kpiId + '"]').html(results[0].value);
+    }
+    else{
+      CRM.$('td[id="kpi-value-' + kpiId + '"]').html(results[0].value);
+    }
   }, function(failure) {
+    console.error(failure);
     CRM.alert('There\'s been an error calculating this KPI.', 'error', 'error');
   });
 }

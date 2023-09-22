@@ -100,10 +100,8 @@ function campaignmanager_civicrm_postCommit($op, $objectName, $objectId, &$objec
         ->execute()
         ->single();
       $depth = $parentTree['depth'] + 1;
-      $path = $parentTree['path'];
+      $path = $parentTree['path'] . $objectRef->parent_id . CRM_CampaignManager_BAO_CampaignTree::SEPARATOR;
     }
-
-    $path .= $objectId . CRM_CampaignManager_BAO_CampaignTree::SEPARATOR;
 
     switch ($op) {
       case 'create':
