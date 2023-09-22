@@ -12,6 +12,7 @@ use Civi\Api4\Generic\Result;
  * @package Civi\Api4\Action\CampaignKPI
  */
 class Calculate extends \Civi\Api4\Generic\AbstractAction {
+  use \Civi\Api4\Traits\CampaignKPITrait;
 
   /**
    * ID of KPI
@@ -120,6 +121,7 @@ class Calculate extends \Civi\Api4\Generic\AbstractAction {
             'campaign_kpi_id' => $this->kpiId,
             'campaign_id' => $this->campaignId,
             'value' => $value,
+            'value_parent' => NULL,
             'last_modified_date' => \CRM_Utils_Date::currentDBDate(),
           ];
           $returnValue = \CRM_CampaignManager_BAO_CampaignKPIValue::formatDisplayValue($value, $className::getDataType());
@@ -150,23 +152,6 @@ class Calculate extends \Civi\Api4\Generic\AbstractAction {
     return [
       ['name' => 'value', 'data_type' => 'String'],
     ];
-  }
-
-  /**
-   * Returns ancestors id
-   *
-   * @param string $path
-   * @param bool $fullPath
-   *
-   * @return array
-   */
-  private function getAncestors($path, $fullPath = TRUE) {
-    $pathArray = array_filter(explode(CampaignTree::SEPARATOR, $path), 'strlen');
-    if (!$fullPath) {
-      $pathArray = array_slice($pathArray, array_search($this->campaignId, $pathArray) - 1);
-    }
-    return $pathArray;
-
   }
 
 }
