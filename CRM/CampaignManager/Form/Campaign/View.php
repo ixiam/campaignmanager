@@ -61,25 +61,33 @@ class CRM_CampaignManager_Form_Campaign_View extends CRM_Core_Form {
     $this->assign('campaign', $campaign);
 
     // get KPIs
+    $allKPIs = \Civi\CampaignManager\Utils\ClassScanner::scanClasses('Civi\CampaignManager\KPI', 'Civi\CampaignManager\KPI\AbstractKPI', 'kpi');
     $campaignKpis = \Civi\Api4\CampaignKPI::get()
-      ->addSelect('name', 'title', 'campaign_kpi_value.value', 'campaign_kpi_value.value_parent')
+      ->addSelect('name', 'title', 'campaign_kpi_value.value', 'campaign_kpi_value.value_parent', 'campaign_kpi_value.last_modified_date')
       ->addJoin('CampaignKPIValue AS campaign_kpi_value', 'LEFT',
           ['campaign_kpi_value.campaign_kpi_id', '=', 'id'],
           ['campaign_kpi_value.campaign_id', '=', $campaignId]
         )
       ->addWhere('is_active', '=', TRUE)
       ->execute();
-    $campaignKpis = array_map(function($tag) {
-      return [
-        'id' => $tag['id'],
-        'name' => $tag['name'],
-        'title' => $tag['title'],
-        'value' => $tag['campaign_kpi_value.value'],
-        'value_parent' => $tag['campaign_kpi_value.value_parent'],
-      ];
-    }, (array) $campaignKpis);
 
-    $this->assign('kpis', $campaignKpis);
+    $kpis = [];
+    foreach ($campaignKpis as $key => $kpi) {
+      if (isset($allKPIs[$kpi['name']])) {
+        $className = '\\Civi\\CampaignManager\\KPI\\' . $allKPIs[$kpi['name']];
+        $dataType = $className::getDataType();
+        $kpis[] = [
+          'id' => $kpi['id'],
+          'name' => $kpi['name'],
+          'title' => $kpi['title'],
+          'value' => CRM_CampaignManager_BAO_CampaignKPIValue::formatDisplayValue($kpi['campaign_kpi_value.value'], $dataType),
+          'value_parent' => CRM_CampaignManager_BAO_CampaignKPIValue::formatDisplayValue($kpi['campaign_kpi_value.value_parent'], $dataType),
+          'last_modified_date' => $kpi['campaign_kpi_value.last_modified_date'],
+        ];
+      }
+    }
+
+    $this->assign('kpis', $kpis);
 
   }
 

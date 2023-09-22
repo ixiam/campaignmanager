@@ -10,6 +10,7 @@ class ContributionTotalAmountKPI extends AbstractKPI {
 
   protected static $name = "contribution_total_amount";
   protected static $title = "Contribution Total Amount";
+  protected static $dataType = \CRM_Utils_Type::T_MONEY;
 
   /**
    * Calculate total contributions for campaign

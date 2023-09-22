@@ -11,8 +11,29 @@ abstract class AbstractKPI {
   /**
    * override these attributes in class implementation
    */
+
+
+  /**
+   * KPI name
+   *
+   * @var string
+   */
   protected static $name = "kpi_name";
+
+  /**
+   * KPI display Title
+   *
+   * @var string
+   */
   protected static $title = "KPI Title";
+
+  /**
+   * KPI data type
+   * available type so far T_FLOAT / T_INT / T_STRING / T_DATE / T_BOOLEAN / T_MONEY
+   *
+   * @var int
+   */
+  protected static $dataType = \CRM_Utils_Type::T_INT;
 
   /**
    * Calculate KPI
@@ -40,6 +61,15 @@ abstract class AbstractKPI {
    */
   public static function getTitle() {
     return static::$title;
+  }
+
+  /**
+   * Return class::dataType
+   *
+   * @return string
+   */
+  public static function getDataType() {
+    return static::$dataType;
   }
 
 }

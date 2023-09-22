@@ -109,16 +109,20 @@ class Calculate extends \Civi\Api4\Generic\AbstractAction {
               }
             }
           }
-          $returnValue = $campaignKPIValues[$this->campaignId]['value_parent'];
+          $returnValue = \CRM_CampaignManager_BAO_CampaignKPIValue::formatDisplayValue(
+            $campaignKPIValues[$this->campaignId]['value_parent'],
+            $className::getDataType()
+          );
         }
         else {
-          $returnValue = $value = $className::calculate($this->campaignId);
+          $value = $className::calculate($this->campaignId);
           $campaignKPIValues[] = [
             'campaign_kpi_id' => $this->kpiId,
             'campaign_id' => $this->campaignId,
             'value' => $value,
             'last_modified_date' => \CRM_Utils_Date::currentDBDate(),
           ];
+          $returnValue = \CRM_CampaignManager_BAO_CampaignKPIValue::formatDisplayValue($value, $className::getDataType());
         }
 
         if ($this->persist && !empty($campaignKPIValues)) {
