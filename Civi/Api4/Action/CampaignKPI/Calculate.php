@@ -67,13 +67,13 @@ class Calculate extends \Civi\Api4\Generic\AbstractAction {
           $treePath = CampaignTree::SEPARATOR . $this->campaignId . CampaignTree::SEPARATOR;
           $campaignTrees = \Civi\Api4\CampaignTree::get()
             ->addSelect('campaign_id.parent_id', 'id', 'campaign_id', 'path', 'depth')
-            ->addClause('OR', ['id', '=', 4], ['path', 'LIKE', "%{$treePath}%"])
+            ->addClause('OR', ['id', '=', $this->campaignId], ['path', 'LIKE', "%{$treePath}%"])
             ->addOrderBy('depth', 'DESC')
             ->execute();
           // get tree depth limits to simplify parents calculations
           $treeLimits = \Civi\Api4\CampaignTree::get()
             ->addSelect('MIN(depth) AS min', 'MAX(depth) AS max')
-            ->addClause('OR', ['id', '=', 4], ['path', 'LIKE', "%{$treePath}%"])
+            ->addClause('OR', ['id', '=', $this->campaignId], ['path', 'LIKE', "%{$treePath}%"])
             ->execute()
             ->single();
 

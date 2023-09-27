@@ -49,15 +49,19 @@ class CalculateAll extends \Civi\Api4\Generic\AbstractAction {
     }
     $campaigns = $campaignApi->execute();
 
-    // init KPI values array
+    // init KPI values array[kpi_id][campaign_id][kpi_values|array]
     $campaignKPIValues = array_fill_keys(
-      array_column((array) $campaigns, 'id'),
-      [
-        'campaign_kpi_id' => NULL,
-        'campaign_id' => NULL,
-        'value' => 0,
-        'last_modified_date' => $now,
-      ]
+      array_column((array) $kpis, 'id'),
+      array_fill_keys(
+        array_column((array) $campaigns, 'id'),
+        [
+          'campaign_kpi_id' => NULL,
+          'campaign_id' => NULL,
+          'value' => NULL,
+          'value_parent' => NULL,
+          'last_modified_date' => $now,
+        ]
+      )
     );
 
     // Loop by KPIs
@@ -66,26 +70,22 @@ class CalculateAll extends \Civi\Api4\Generic\AbstractAction {
       if ($kpiName) {
         if (isset($kpiClasses[$kpiName])) {
           $className = '\\Civi\\CampaignManager\\KPI\\' . $kpiClasses[$kpiName];
-          $campaignKPIValues = [];
 
           // Loop by campaigns
           foreach ($campaigns as $campaign) {
             $value = $className::calculate($campaign['id']);
-            $campaignKPIValues[$campaign['id']] = [
-              'campaign_kpi_id' => $kpi['id'],
-              'campaign_id' => $campaign['id'],
-              'value' => $value,
-              'last_modified_date' => $now,
-            ];
+            $campaignKPIValues[$kpi['id']][$campaign['id']]['campaign_kpi_id'] = $kpi['id'];
+            $campaignKPIValues[$kpi['id']][$campaign['id']]['campaign_id'] = $campaign['id'];
+            $campaignKPIValues[$kpi['id']][$campaign['id']]['value'] = $value;
 
             // Calculate parents value
             if ($this->parentValue) {
-              $campaignKPIValues[$campaign['id']]['value_parent'] += $value;
+              $campaignKPIValues[$kpi['id']][$campaign['id']]['value_parent'] += $value;
               if (isset($campaign['parent_id'])) {
                 $ancestors = $this->getAncestors($campaign['campaign_tree.path']);
                 // Loop by tree branch to update parent values
-                foreach ($ancestors as $ancestor) {
-                  $campaignKPIValues[$ancestor]['value_parent'] += $value;
+                foreach ($ancestors as $ancestor_id) {
+                  $campaignKPIValues[$kpi['id']][$ancestor_id]['value_parent'] += $value;
                 }
               }
             }
@@ -96,15 +96,19 @@ class CalculateAll extends \Civi\Api4\Generic\AbstractAction {
 
     // save values in DB
     if ($this->persist && !empty($campaignKPIValues)) {
-      $params = array_values($campaignKPIValues);
+      $kpiValues = [];
+      foreach ($campaignKPIValues as $key => $value) {
+        $kpiValues = array_merge($kpiValues, array_values($value));
+      }
+      $kpiValues = array_values($kpiValues);
       \Civi\Api4\CampaignKPIValue::save()
-        ->setRecords($params)
+        ->setRecords($kpiValues)
         ->setMatch(['campaign_kpi_id', 'campaign_id'])
         ->execute();
     }
 
     $result[] = [
-      'value' => $campaignKPIValues,
+      'value' => $kpiValues,
     ];
 
   }

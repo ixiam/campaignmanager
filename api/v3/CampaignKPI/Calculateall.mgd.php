@@ -5,15 +5,15 @@
 // https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_managed
 return [
   [
-    'name' => 'Cron:CampaignKPI.Calculate',
+    'name' => 'Cron:CampaignKPI.Calculateall',
     'entity' => 'Job',
     'params' => [
       'version' => 3,
-      'name' => 'Calculate Campaign KPIs',
-      'description' => 'Calculate Campaign KPIs',
+      'name' => 'Calculate All Campaign KPIs',
+      'description' => 'Calculate All Campaign KPIs',
       'run_frequency' => 'Daily',
       'api_entity' => 'CampaignKPI',
-      'api_action' => 'Calculate',
+      'api_action' => 'Calculateall',
       'parameters' => '',
     ],
   ],

@@ -11,11 +11,11 @@ use CRM_CampaignManager_ExtensionUtil as E;
  *
  * @see https://docs.civicrm.org/dev/en/latest/framework/api-architecture/
  */
-function _civicrm_api3_campaign_status_rule_Calculate_spec(&$spec) {
+function _civicrm_api3_campaign_k_p_i_Calculate_spec(&$spec) {
   $spec['kpis_id'] = [
     'title' => 'KPIs',
     'description' => 'List of KPI ids (comma separated).',
-    'type' => CRM_Utils_Type::T_STRING
+    'type' => CRM_Utils_Type::T_STRING,
   ];
   $spec['campaign_id'] = [
     'title' => 'Campaign id',
@@ -33,7 +33,7 @@ function _civicrm_api3_campaign_status_rule_Calculate_spec(&$spec) {
 }
 
 /**
- * This api checks and updates the status of all campaigns
+ * This api calculates Campaign KPIs
  *
  * @param array $params
  *   Input parameters
@@ -41,39 +41,32 @@ function _civicrm_api3_campaign_status_rule_Calculate_spec(&$spec) {
  * @return bool
  *   true if success, else false
  */
-function civicrm_api3_campaign_status_rule_Process($params) {
-  $lock = Civi::lockManager()->acquire('worker.campaign.UpdateStatus');
-
+function civicrm_api3_campaign_k_p_i_Calculate($params) {
+  // ToDo
+  /*
+  $lock = Civi::lockManager()->acquire('worker.campaign.UpdateKPIs');
   if (!$lock->isAcquired()) {
-    return civicrm_api3_create_error('Could not acquire lock, another Campaign Status Update process is running');
-  }
-
-  if ($params['only_active_campaigns']) {
-    $campaigns = \Civi\Api4\Campaign::get()
-      ->addWhere('is_active', '=', TRUE)
-      ->execute();
-  }
-  else {
-    $campaigns = \Civi\Api4\Campaign::get()->execute();
+  return civicrm_api3_create_error('Could not acquire lock, another Campaign Status Update process is running');
   }
 
   try {
-    foreach ($campaigns as $campaign) {
-      $statusId = CRM_CampaignManager_BAO_CampaignStatusRule::getCampaignStatusByDate($startDate, $endDate, 'now', (array) $campaign);
-      if ($statusId) {
-        $results = \Civi\Api4\Campaign::update()
-          ->addValue('status_id', $statusId)
-          ->addWhere('id', '=', $campaign['id'])
-          ->execute();
-      }
-    }
+  foreach ($campaigns as $campaign) {
+  $statusId = CRM_CampaignManager_BAO_CampaignStatusRule::getCampaignStatusByDate($startDate, $endDate, 'now', (array) $campaign);
+  if ($statusId) {
+  $results = \Civi\Api4\Campaign::update()
+  ->addValue('status_id', $statusId)
+  ->addWhere('id', '=', $campaign['id'])
+  ->execute();
+  }
+  }
   }
   catch (Exception $e) {
-    return civicrm_api3_create_error($e->getMessage());
+  return civicrm_api3_create_error($e->getMessage());
   }
   finally{
-    $lock->release();
+  $lock->release();
   }
+   */
 
-  return civicrm_api3_create_success(TRUE, $params, 'CampaignStatusRule', 'Process');
+  return civicrm_api3_create_success(TRUE, $params, 'CampaignKPI', 'Calculate');
 }
