@@ -165,10 +165,10 @@
       <table class="row-highlight display kpi-table">
         <thead class="sticky">
           <tr class="columnheader">
-            <th>{ts}KPI{/ts}</th>
-            <th>{ts}Value{/ts}</th>
+            <th style="text-align:center;">{ts}KPI{/ts}</th>
+            <th style="text-align:center;">{ts}Value{/ts}</th>
             {if !empty($campaign.is_parent)}
-            <th>{ts}Parent Value{/ts}</th>
+            <th style="text-align:center;">{ts}Parent Value{/ts}</th>
             {/if}
           </tr>
         </thead>
@@ -179,11 +179,11 @@
               <td id='kpi-value-{$kpi.id}' style="text-align: right">
                 {$kpi.value}&nbsp;
                 <span style="margin-left: 1rem">
-                  <a href="#" class="crm-hover-button" id="swap_target_assignee" data-toggle="tooltip" title="Sep 2nd 2023">
+                  <a href="#" class="crm-hover-button" id="swap_target_assignee" data-toggle="tooltip" title="Updated on {$kpi.last_modified_date}">
                    <i class="crm-i fa-question-circle-o" aria-hidden="true"></i>
                   </a>
-                  <a href="" onclick="refreshKpiValue('{$kpi.id}', '{$campaign.id}')" title="{ts}Refresh{/ts}" class="crm-i fa-refresh crm-hover-button"> <span class="d-none"> {ts}Refresh{/ts}</span>
-                   <!--<i class="crm-i fa-refresh" aria-hidden="true"></i>-->
+                  <a href="" onclick="refreshKpiValue('{$kpi.id}', '{$campaign.id}')" title="{ts}Refresh{/ts}" class="crm-i fa-refresh crm-hover-button">
+                    <span class="d-none"> {ts}Refresh{/ts}</span>
                   </a>
                 </span>
               </td>
@@ -191,11 +191,11 @@
               <td id='kpi-value_parent-{$kpi.id}' style="text-align: right">
                 {$kpi.value_parent}&nbsp;
                 <span style="margin-left: 1rem">
-                  <a href="#" class="crm-hover-button" id="swap_target_assignee" title="Sep 2nd 2023">
+                  <a href="#" class="crm-hover-button" id="swap_target_assignee" title="Updated on {$kpi.last_modified_date}">
                    <i class="crm-i fa-question-circle-o" aria-hidden="true"></i>
                   </a>
-                  <a href="" onclick="refreshKpiValue('{$kpi.id}', '{$campaign.id}', true)" title="{ts}Refresh{/ts}" class="crm-i fa-refresh crm-hover-button"><span class="d-none"> {ts}Refresh{/ts}</span>
-                   <!--<i class="crm-i fa-refresh" aria-hidden="true"></i>-->
+                  <a href="" onclick="refreshKpiValue('{$kpi.id}', '{$campaign.id}', true)" title="{ts}Refresh{/ts}" class="crm-i fa-refresh crm-hover-button">
+                    <span class="d-none"> {ts}Refresh{/ts}</span>
                   </a>
                 </span>
               </td>
@@ -240,8 +240,10 @@ function refreshKpiValue(kpiId, campaignId, parentValue = false){
       CRM.$('td[id="kpi-value-' + kpiId + '"]').html(results[0].value);
     }
   }, function(failure) {
-    console.error(failure);
-    CRM.alert('There\'s been an error calculating this KPI.', 'error', 'error');
+    if(failure !== undefined) {
+      console.error(failure);
+      CRM.alert('There\'s been an error calculating this KPI.\n' . failure.error_message, 'error', 'error');
+    }
   });
 }
 </script>

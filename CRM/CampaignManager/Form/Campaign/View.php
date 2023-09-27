@@ -76,13 +76,22 @@ class CRM_CampaignManager_Form_Campaign_View extends CRM_Core_Form {
       if (isset($allKPIs[$kpi['name']])) {
         $className = '\\Civi\\CampaignManager\\KPI\\' . $allKPIs[$kpi['name']];
         $dataType = $className::getDataType();
+        $lastModifiedFormatted = $kpi['campaign_kpi_value.last_modified_date'] ?
+          CRM_Utils_Date::customFormat($kpi['campaign_kpi_value.last_modified_date'], CRM_Core_Config::singleton()->dateformatDatetime) :
+          ts('N/A');
+        $value = !empty($kpi['campaign_kpi_value.value']) ?
+          CRM_CampaignManager_BAO_CampaignKPIValue::formatDisplayValue($kpi['campaign_kpi_value.value'], $dataType) :
+          ts('N/A');
+        $value_parent = !empty($kpi['campaign_kpi_value.value_parent']) ?
+          CRM_CampaignManager_BAO_CampaignKPIValue::formatDisplayValue($kpi['campaign_kpi_value.value_parent'], $dataType) :
+          ts('N/A');
         $kpis[] = [
           'id' => $kpi['id'],
           'name' => $kpi['name'],
           'title' => $kpi['title'],
-          'value' => CRM_CampaignManager_BAO_CampaignKPIValue::formatDisplayValue($kpi['campaign_kpi_value.value'], $dataType),
-          'value_parent' => CRM_CampaignManager_BAO_CampaignKPIValue::formatDisplayValue($kpi['campaign_kpi_value.value_parent'], $dataType),
-          'last_modified_date' => $kpi['campaign_kpi_value.last_modified_date'],
+          'value' => $value,
+          'value_parent' => $value_parent,
+          'last_modified_date' => $lastModifiedFormatted,
         ];
       }
     }
