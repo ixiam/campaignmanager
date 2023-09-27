@@ -176,25 +176,25 @@
           {foreach from=$kpis item=kpi}
             <tr>
               <td>{$kpi.title}</td>
-              <td id='kpi-value-{$kpi.id}' style="text-align: right">
-                {$kpi.value}&nbsp;
+              <td style="text-align: right">
+                <span id='kpi-value-{$kpi.id}'>{$kpi.value}</span>&nbsp;
                 <span style="margin-left: 1rem">
                   <a href="#" class="crm-hover-button" id="swap_target_assignee" data-toggle="tooltip" title="Updated on {$kpi.last_modified_date}">
                    <i class="crm-i fa-question-circle-o" aria-hidden="true"></i>
                   </a>
-                  <a href="" onclick="refreshKpiValue('{$kpi.id}', '{$campaign.id}')" title="{ts}Refresh{/ts}" class="crm-i fa-refresh crm-hover-button">
+                  <a href="#" onclick="refreshKpiValue('{$kpi.id}', '{$campaign.id}')" title="{ts}Refresh{/ts}" class="crm-i fa-refresh crm-hover-button">
                     <span class="d-none"> {ts}Refresh{/ts}</span>
                   </a>
                 </span>
               </td>
               {if !empty($campaign.is_parent)}
-              <td id='kpi-value_parent-{$kpi.id}' style="text-align: right">
-                {$kpi.value_parent}&nbsp;
+              <td style="text-align: right">
+                <span id='kpi-value_parent-{$kpi.id}'>{$kpi.value_parent}</span>&nbsp;
                 <span style="margin-left: 1rem">
                   <a href="#" class="crm-hover-button" id="swap_target_assignee" title="Updated on {$kpi.last_modified_date}">
                    <i class="crm-i fa-question-circle-o" aria-hidden="true"></i>
                   </a>
-                  <a href="" onclick="refreshKpiValue('{$kpi.id}', '{$campaign.id}', true)" title="{ts}Refresh{/ts}" class="crm-i fa-refresh crm-hover-button">
+                  <a href="#" onclick="refreshKpiValue('{$kpi.id}', '{$campaign.id}', true)" title="{ts}Refresh{/ts}" class="crm-i fa-refresh crm-hover-button">
                     <span class="d-none"> {ts}Refresh{/ts}</span>
                   </a>
                 </span>
@@ -234,16 +234,18 @@ function refreshKpiValue(kpiId, campaignId, parentValue = false){
     'parentValue': parentValue
   }).then(function(results) {
     if(parentValue){
-      CRM.$('td[id="kpi-value_parent-' + kpiId + '"]').html(results[0].value);
+      CRM.$('span[id="kpi-value_parent-' + kpiId + '"]').html(results[0].value);
     }
     else{
-      CRM.$('td[id="kpi-value-' + kpiId + '"]').html(results[0].value);
+      CRM.$('span[id="kpi-value-' + kpiId + '"]').html(results[0].value);
     }
   }, function(failure) {
+    var errorMsg = "There\'s been an error calculating this KPI.\n";
+    console.error(failure);
     if(failure !== undefined) {
-      console.error(failure);
-      CRM.alert('There\'s been an error calculating this KPI.\n' . failure.error_message, 'error', 'error');
+      errorMsg = errorMsg + failure.error_message;
     }
+    CRM.alert(errorMsg, 'error', 'error');
   });
 }
 </script>

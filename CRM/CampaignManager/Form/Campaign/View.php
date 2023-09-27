@@ -17,7 +17,6 @@ class CRM_CampaignManager_Form_Campaign_View extends CRM_Core_Form {
    * @return void
    */
   public function preProcess() {
-    $values = $ids = [];
     $campaignId = CRM_Utils_Request::retrieve('id', 'Positive', $this);
     if (!$campaignId) {
       CRM_Core_Error::statusBounce(E::ts('Campaign Id missing.'));
@@ -76,13 +75,13 @@ class CRM_CampaignManager_Form_Campaign_View extends CRM_Core_Form {
       if (isset($allKPIs[$kpi['name']])) {
         $className = '\\Civi\\CampaignManager\\KPI\\' . $allKPIs[$kpi['name']];
         $dataType = $className::getDataType();
-        $lastModifiedFormatted = $kpi['campaign_kpi_value.last_modified_date'] ?
+        $lastModifiedFormatted = !is_null($kpi['campaign_kpi_value.last_modified_date']) ?
           CRM_Utils_Date::customFormat($kpi['campaign_kpi_value.last_modified_date'], CRM_Core_Config::singleton()->dateformatDatetime) :
           ts('N/A');
-        $value = !empty($kpi['campaign_kpi_value.value']) ?
+        $value = !is_null($kpi['campaign_kpi_value.value']) ?
           CRM_CampaignManager_BAO_CampaignKPIValue::formatDisplayValue($kpi['campaign_kpi_value.value'], $dataType) :
           ts('N/A');
-        $value_parent = !empty($kpi['campaign_kpi_value.value_parent']) ?
+        $value_parent = !is_null($kpi['campaign_kpi_value.value_parent']) ?
           CRM_CampaignManager_BAO_CampaignKPIValue::formatDisplayValue($kpi['campaign_kpi_value.value_parent'], $dataType) :
           ts('N/A');
         $kpis[] = [
