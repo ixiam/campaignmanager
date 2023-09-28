@@ -88,7 +88,7 @@
     <length>12</length>
     <comment>Event after which this status ends.</comment>
     <pseudoconstant>
-      <callback>CRM_Core_SelectValues::eventDate</callback>
+      <callback>CRM_CampaignManager_BAO_CampaignStatusRule::eventDate</callback>
     </pseudoconstant>
     <html>
       <type>Select</type>
@@ -102,7 +102,7 @@
     <length>8</length>
     <comment>Unit used for adjusting from the ending event.</comment>
     <pseudoconstant>
-      <callback>CRM_CampaignManager_BAO_CampaignStatusRule::eventDate</callback>
+      <callback>CRM_Core_SelectValues::unitList</callback>
     </pseudoconstant>
     <html>
       <type>Select</type>

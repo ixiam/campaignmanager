@@ -316,7 +316,7 @@ class CRM_CampaignManager_DAO_CampaignStatusRule extends CRM_Core_DAO {
             'label' => E::ts("End Event"),
           ],
           'pseudoconstant' => [
-            'callback' => 'CRM_Core_SelectValues::eventDate',
+            'callback' => 'CRM_CampaignManager_BAO_CampaignStatusRule::eventDate',
           ],
           'add' => NULL,
         ],
@@ -343,7 +343,7 @@ class CRM_CampaignManager_DAO_CampaignStatusRule extends CRM_Core_DAO {
             'label' => E::ts("End Event Adjust Unit"),
           ],
           'pseudoconstant' => [
-            'callback' => 'CRM_CampaignManager_BAO_CampaignStatusRule::eventDate',
+            'callback' => 'CRM_Core_SelectValues::unitList',
           ],
           'add' => NULL,
         ],

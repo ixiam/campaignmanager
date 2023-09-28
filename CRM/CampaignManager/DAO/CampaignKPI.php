@@ -66,7 +66,7 @@ class CRM_CampaignManager_DAO_CampaignKPI extends CRM_Core_DAO {
   public $title;
 
   /**
-   * Is this membership_status enabled.
+   * Is Active?
    *
    * @var bool|string
    *   (SQL type: tinyint)
@@ -180,7 +180,7 @@ class CRM_CampaignManager_DAO_CampaignKPI extends CRM_Core_DAO {
           'name' => 'is_active',
           'type' => CRM_Utils_Type::T_BOOLEAN,
           'title' => E::ts('Is Active'),
-          'description' => E::ts('Is this membership_status enabled.'),
+          'description' => E::ts('Is Active?.'),
           'required' => TRUE,
           'usage' => [
             'import' => FALSE,
