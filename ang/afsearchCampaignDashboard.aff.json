@@ -1,0 +1,9 @@
+{
+  "type": "search",
+  "title": "Campaign Dashboard",
+  "icon": "fa-table",
+  "server_route": "civicrm/campaign",
+  "permission": ["administer CiviCampaign", "manage campaign"],
+  "permission_operator": "OR"
+}
+

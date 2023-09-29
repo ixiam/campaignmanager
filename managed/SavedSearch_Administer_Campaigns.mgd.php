@@ -1,20 +1,17 @@
 <?php
-
-// phpcs:disable
-use CRM_CampaignManager_ExtensionUtil as E;
-// phpcs:enable
+use CRM_Campaign_ExtensionUtil as E;
 
 return [
   [
-    'name' => 'SavedSearch_Campaign_List',
+    'name' => 'SavedSearch_Administer_Campaigns',
     'entity' => 'SavedSearch',
     'cleanup' => 'always',
     'update' => 'unmodified',
     'params' => [
       'version' => 4,
       'values' => [
-        'name' => 'Campaign_List',
-        'label' => E::ts('Campaign List'),
+        'name' => 'Administer_Campaigns',
+        'label' => E::ts('Administer Campaigns'),
         'form_values' => NULL,
         'mapping_id' => NULL,
         'search_custom_id' => NULL,
@@ -58,39 +55,42 @@ return [
     ],
   ],
   [
-    'name' => 'SavedSearch_Campaign_List_SearchDisplay_Campaign_List_Table_1',
+    'name' => 'SavedSearch_Administer_Campaigns_SearchDisplay_Campaigns_Table',
     'entity' => 'SearchDisplay',
     'cleanup' => 'always',
     'update' => 'unmodified',
     'params' => [
       'version' => 4,
       'values' => [
-        'name' => 'Campaign_List_Table_1',
-        'label' => E::ts('Campaign List Table 1'),
-        'saved_search_id.name' => 'Campaign_List',
+        'name' => 'Campaigns_Table',
+        'label' => E::ts('Administer Campaigns'),
+        'saved_search_id.name' => 'Administer_Campaigns',
         'type' => 'table',
         'settings' => [
-          'description' => NULL,
-          'sort' => [],
+          'actions' => FALSE,
           'limit' => 50,
+          'classes' => [
+            'table',
+            'table-striped',
+          ],
           'pager' => [
-            'show_count' => TRUE,
+            'show_count' => FALSE,
+            'expose_limit' => TRUE,
+            'hide_single' => TRUE,
           ],
           'placeholder' => 5,
+          'sort' => [
+            ['is_active', 'DESC'],
+            ['title', 'ASC'],
+          ],
           'columns' => [
-            [
-              'type' => 'field',
-              'key' => 'id',
-              'dataType' => 'Integer',
-              'label' => E::ts('ID'),
-              'sortable' => TRUE,
-            ],
             [
               'type' => 'field',
               'key' => 'title',
               'dataType' => 'String',
               'label' => E::ts('Title'),
               'sortable' => TRUE,
+              'editable' => TRUE,
             ],
             [
               'type' => 'field',
@@ -102,30 +102,34 @@ return [
             [
               'type' => 'field',
               'key' => 'description',
-              'dataType' => 'Text',
+              'dataType' => 'String',
               'label' => E::ts('Description'),
               'sortable' => TRUE,
+              'editable' => TRUE,
             ],
             [
               'type' => 'field',
               'key' => 'start_date',
-              'dataType' => 'Timestamp',
+              'dataType' => 'Date',
               'label' => E::ts('Start Date'),
               'sortable' => TRUE,
+              'editable' => TRUE,
             ],
             [
               'type' => 'field',
               'key' => 'end_date',
-              'dataType' => 'Timestamp',
+              'dataType' => 'Date',
               'label' => E::ts('End Date'),
               'sortable' => TRUE,
+              'editable' => TRUE,
             ],
             [
               'type' => 'field',
               'key' => 'campaign_type_id:label',
-              'dataType' => 'Integer',
+              'dataType' => 'String',
               'label' => E::ts('Type'),
               'sortable' => TRUE,
+              'editable' => TRUE,
             ],
             [
               'type' => 'field',
@@ -182,7 +186,7 @@ return [
                   'join' => '',
                   'target' => 'crm-popup',
                   'icon' => 'fa-pencil',
-                  'text' => E::ts('Edit Campaign'),
+                  'text' => E::ts('Edit'),
                   'style' => 'default',
                   'path' => '',
                   'condition' => [],
@@ -193,8 +197,8 @@ return [
                   'join' => '',
                   'target' => 'crm-popup',
                   'icon' => 'fa-trash',
-                  'text' => E::ts('Delete Campaign'),
-                  'style' => 'danger',
+                  'text' => E::ts('Delete'),
+                  'style' => 'danger small-popup',
                   'path' => '',
                   'condition' => [],
                 ],
