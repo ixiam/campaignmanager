@@ -41,7 +41,7 @@ CREATE TABLE `civicrm_campaign_kpi` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'Campaign KPI ID',
   `name` varchar(255) NOT NULL COMMENT 'Name of the Campaign KPI.',
   `title` varchar(255) COMMENT 'Title of the Campaign KPI.',
-  `is_active` tinyint NOT NULL DEFAULT 1 COMMENT 'Is this membership_status enabled.',
+  `is_active` tinyint NOT NULL DEFAULT 1 COMMENT 'Is Active?',
   PRIMARY KEY (`id`),
   UNIQUE INDEX `UI_name`(name)
 )
@@ -62,6 +62,7 @@ CREATE TABLE `civicrm_campaign_kpi_value` (
   `value_parent` varchar(255) COMMENT 'KPI Parent value.',
   `last_modified_date` datetime COMMENT 'Date and time that Campaign was edited last time.',
   PRIMARY KEY (`id`),
+  UNIQUE INDEX `UI_campaign_kpi_id`(campaign_kpi_id, campaign_id),
   CONSTRAINT FK_civicrm_campaign_kpi_value_campaign_kpi_id FOREIGN KEY (`campaign_kpi_id`) REFERENCES `civicrm_campaign_kpi`(`id`) ON DELETE CASCADE,
   CONSTRAINT FK_civicrm_campaign_kpi_value_campaign_id FOREIGN KEY (`campaign_id`) REFERENCES `civicrm_campaign`(`id`) ON DELETE CASCADE
 )
@@ -79,6 +80,7 @@ CREATE TABLE `civicrm_campaign_status_override` (
   `campaign_id` int unsigned NOT NULL COMMENT 'Campaign ID',
   `is_override` tinyint NOT NULL DEFAULT 0 COMMENT 'Admin users may set a manual status which overrides the calculated status. When this flag is true, automated status update scripts should NOT modify status for the record.',
   PRIMARY KEY (`id`),
+  UNIQUE INDEX `UI_campaign_id`(campaign_id),
   CONSTRAINT FK_civicrm_campaign_status_override_campaign_id FOREIGN KEY (`campaign_id`) REFERENCES `civicrm_campaign`(`id`) ON DELETE CASCADE
 )
 ENGINE=InnoDB;
@@ -100,8 +102,8 @@ CREATE TABLE `civicrm_campaign_status_rule` (
   `end_event_adjust_unit` varchar(8) COMMENT 'Unit used for adjusting from the ending event.',
   `end_event_adjust_interval` int COMMENT 'Status range ends this many units from end_event.',
   `weight` int,
-  `is_default` tinyint NOT NULL DEFAULT 0 COMMENT 'Assign this status to a membership record if no other status match is found.',
-  `is_active` tinyint NOT NULL DEFAULT 1 COMMENT 'Is this membership_status enabled.',
+  `is_default` tinyint NOT NULL DEFAULT 0 COMMENT 'Is Default?',
+  `is_active` tinyint NOT NULL DEFAULT 1 COMMENT 'Is Active?',
   PRIMARY KEY (`id`)
 )
 ENGINE=InnoDB;
@@ -119,6 +121,7 @@ CREATE TABLE `civicrm_campaign_tree` (
   `path` varchar(255) COMMENT 'Tree Node path',
   `depth` int unsigned NOT NULL COMMENT 'Tree Node depth',
   PRIMARY KEY (`id`),
+  UNIQUE INDEX `UI_campaign_id`(campaign_id),
   CONSTRAINT FK_civicrm_campaign_tree_campaign_id FOREIGN KEY (`campaign_id`) REFERENCES `civicrm_campaign`(`id`) ON DELETE CASCADE
 )
 ENGINE=InnoDB;

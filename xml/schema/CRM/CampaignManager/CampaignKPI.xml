@@ -40,6 +40,7 @@
     <fieldName>name</fieldName>
     <unique>true</unique>
   </index>
+
   <field>
     <name>title</name>
     <title>Campaign KPI Title</title>
@@ -63,7 +64,7 @@
       <type>CheckBox</type>
       <label>Enabled</label>
     </html>
-    <comment>Is this membership_status enabled.</comment>
+    <comment>Is Active?</comment>
   </field>
 
 </table>

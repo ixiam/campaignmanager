@@ -71,4 +71,11 @@
     <comment>Date and time that Campaign was edited last time.</comment>
   </field>
 
+  <index>
+    <name>UI_campaign_kpi_id</name>
+    <fieldName>campaign_kpi_id</fieldName>
+    <fieldName>campaign_id</fieldName>
+    <unique>true</unique>
+  </index>
+
 </table>

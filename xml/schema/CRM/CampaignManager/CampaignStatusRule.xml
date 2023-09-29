@@ -135,7 +135,7 @@
       <type>CheckBox</type>
       <label>Default</label>
     </html>
-    <comment>Assign this status to a membership record if no other status match is found.</comment>
+    <comment>Is Default?</comment>
   </field>
 
   <field>
@@ -148,7 +148,7 @@
       <type>CheckBox</type>
       <label>Enabled</label>
     </html>
-    <comment>Is this membership_status enabled.</comment>
+    <comment>Is Active?</comment>
   </field>
 
 </table>

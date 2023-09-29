@@ -9,6 +9,10 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 // phpcs:enable
 
+/**
+ * Implements hook_civicrm_pre().
+ *
+ */
 function campaignmanager_civicrm_pre($op, $objectName, $id, &$params) {
   if ($objectName == "Campaign" && in_array($op, ['create', 'edit'])) {
     // Calculate and edit campaign status
@@ -40,11 +44,16 @@ function campaignmanager_civicrm_buildForm($formName, &$form) {
           $campaignAPI = \Civi\Api4\Campaign::get()->addSelect('id', 'title');
           if ($cid) {
             $campaignAPI->addWhere('id', '!=', $cid);
-            $defaults = \Civi\Api4\CampaignStatusOverride::get()
-              ->addSelect('is_override')
-              ->addWhere('campaign_id', '=', $cid)
-              ->execute()
-              ->single() ?? 0;
+            try {
+              $defaults = \Civi\Api4\CampaignStatusOverride::get()
+                ->addSelect('is_override')
+                ->addWhere('campaign_id', '=', $cid)
+                ->execute()
+                ->single();
+            }
+            catch (Exception $e) {
+              // do nothing
+            }
           }
           $campaigns = $campaignAPI->execute()->indexBy('id')->column('title');
 
@@ -88,24 +97,33 @@ function campaignmanager_civicrm_validateForm($formName, &$fields, &$files, &$fo
  */
 function campaignmanager_civicrm_postCommit($op, $objectName, $objectId, &$objectRef) {
   if ($objectName === 'Campaign') {
-    // Save CampaignTree row on Campaign edition
-    $depth = 1;
-
-    $path = CRM_CampaignManager_BAO_CampaignTree::SEPARATOR;
-    // not sure why empty parent_id arrives as string "null"
-    if (!empty($objectRef->parent_id) && ($objectRef->parent_id != 'null')) {
-      $parentTree = \Civi\Api4\CampaignTree::get()
-        ->addSelect('path', 'depth')
-        ->addWhere('campaign_id', '=', $objectRef->parent_id)
-        ->execute()
-        ->single();
-      $depth = $parentTree['depth'] + 1;
-      $path = $parentTree['path'] . $objectRef->parent_id . CRM_CampaignManager_BAO_CampaignTree::SEPARATOR;
-    }
-
     switch ($op) {
       case 'create':
       case 'edit':
+        // Save CampaignTree row on Campaign edition
+        $depth = 1;
+
+        $path = CRM_CampaignManager_BAO_CampaignTree::SEPARATOR;
+        // not sure why empty parent_id arrives as string "null"
+        if (!empty($objectRef->parent_id) && ($objectRef->parent_id != 'null')) {
+          $parentTree = \Civi\Api4\CampaignTree::get()
+            ->addSelect('path', 'depth')
+            ->addWhere('campaign_id', '=', $objectRef->parent_id)
+            ->execute()
+            ->single();
+          $depth = $parentTree['depth'] + 1;
+          $path = $parentTree['path'] . $objectRef->parent_id . CRM_CampaignManager_BAO_CampaignTree::SEPARATOR;
+        }
+
+        // If updating campaign parent, we need to update full branch nodes from there
+        if ($op == 'edit') {
+          $currentTree = \Civi\Api4\CampaignTree::get()
+            ->addSelect('path', 'depth')
+            ->addWhere('campaign_id', '=', $objectId)
+            ->execute()
+            ->single();
+        }
+
         $paramsTree[] = [
           'campaign_id' => $objectId,
           'path' => $path,
@@ -115,6 +133,11 @@ function campaignmanager_civicrm_postCommit($op, $objectName, $objectId, &$objec
           ->setRecords($paramsTree)
           ->setMatch(['campaign_id'])
           ->execute();
+
+        // If current path has changed, update children
+        if ($currentTree['path'] != $path) {
+          CRM_CampaignManager_BAO_CampaignTree::updateCampaignTreeRecur($objectId, $depth, $path . $objectId . CRM_CampaignManager_BAO_CampaignTree::SEPARATOR);
+        }
 
         // Save status is_override
         $isOverride = CRM_Utils_Request::retrieveValue('is_override', 'Boolean', 0, FALSE, 'POST') ?? 0;
